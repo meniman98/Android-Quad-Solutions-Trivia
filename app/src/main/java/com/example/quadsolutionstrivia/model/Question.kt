@@ -1,4 +1,4 @@
-package com.example.quadsolutionstrivia
+package com.example.quadsolutionstrivia.model
 
 class Question {
     var category: String? = null

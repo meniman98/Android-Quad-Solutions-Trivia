@@ -1,5 +1,8 @@
 package com.example.quadsolutionstrivia
 
+import com.example.quadsolutionstrivia.model.CheckAnswer
+import com.example.quadsolutionstrivia.model.CheckAnswerRequest
+import com.example.quadsolutionstrivia.model.Question
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -28,4 +31,19 @@ class ExampleUnitTest {
     fun isNull() {
         assertEquals(null, myQuestion.correct_answer)
     }
+
+    @Test
+    fun dataClass() {
+        val checkAnswer = CheckAnswer(true)
+        assertEquals(true, checkAnswer.result)
+    }
+
+    @Test
+    fun answerRequest() {
+        val answerRequest = CheckAnswerRequest()
+        answerRequest.answer = "ello dere"
+        assertEquals(null, answerRequest.question)
+        assertEquals("ello dere", answerRequest.answer)
+    }
+
 }
