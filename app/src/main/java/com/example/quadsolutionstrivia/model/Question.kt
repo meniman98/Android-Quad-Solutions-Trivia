@@ -1,11 +1,30 @@
 package com.example.quadsolutionstrivia.model
 
-class Question {
-    var category: String? = null
-    var type: String? = null
-    var difficulty: String? = null
-    var question: String? = null
-    var correct_answer: String? = null
-    var incorrect_answers: List<String>? = null
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
+public class Question {
+    @SerializedName("category")
+    @Expose
+    var category: String? = null
+
+    @SerializedName("type")
+    @Expose
+    var type: String? = null
+
+    @SerializedName("difficulty")
+    @Expose
+    var difficulty: String? = null
+
+    @SerializedName("question")
+    @Expose
+    var question: String? = null
+
+    @SerializedName("correct_answer")
+    @Expose
+    var correctAnswer: String? = null
+
+    @SerializedName("incorrect_answers")
+    @Expose
+    var incorrectAnswers: List<String>? = null
 }
