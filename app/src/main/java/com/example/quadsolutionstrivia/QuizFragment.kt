@@ -19,6 +19,11 @@ class QuizFragment : Fragment() {
     private var varBinding: FragmentQuizBinding? = null
     private val binding get() = varBinding!!
     private lateinit var result: Result
+    private lateinit var question1: String
+    private lateinit var question2: String
+    private lateinit var question3: String
+    private lateinit var question4: String
+    private lateinit var title: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,8 +32,6 @@ class QuizFragment : Fragment() {
 
         varBinding = FragmentQuizBinding.inflate(inflater, container, false)
         result = Result()
-        val question1 = result.results?.get(0)?.question
-
         val view = binding.root
 
 
@@ -38,7 +41,8 @@ class QuizFragment : Fragment() {
             override fun onResponse(call: Call<Result>, response: Response<Result>) {
                 if (response.body() != null) {
                     Log.i("Quiz", "response works")
-                    binding.rb1.text = question1
+                    title = response.body()!!.results?.get(0)?.question.toString()
+                    binding.tvQuestion.text = title
                 }
 
             }
