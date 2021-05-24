@@ -20,11 +20,15 @@ import retrofit2.Response
 class ExampleUnitTest {
 
     val myQuestion = Question()
+    val result = Result()
 
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+    @Test
+
 
     @Test
     fun question() {
