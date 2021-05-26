@@ -1,7 +1,6 @@
 package com.example.quadsolutionstrivia
 
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import androidx.core.view.isGone
 import com.example.quadsolutionstrivia.databinding.FragmentQuizBinding
 import com.example.quadsolutionstrivia.model.Result
 import com.example.quadsolutionstrivia.retrofit.ApiInterface
@@ -21,7 +19,6 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.RuntimeException
 
 class QuizFragment : Fragment() {
 
@@ -33,19 +30,24 @@ class QuizFragment : Fragment() {
     private lateinit var question2: String
     private lateinit var question3: String
     private lateinit var question4: String
+    private lateinit var questionsArray: ArrayList<String>
     private lateinit var title: String
     private var count: Int = 0
     private val apiInterface = ApiInterface.create().getQuestions()
+    private lateinit var rbArray: Array<RadioButton>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         //viewbinding
         varBinding = FragmentQuizBinding.inflate(inflater, container, false)
         result = Result()
         val view = binding.root
+
         radioGroup = binding.rgQuestions
+        rbArray = arrayOf(binding.rb1, binding.rb2, binding.rb3, binding.rb4)
 
         //perform network call
         CoroutineScope(IO).launch {
@@ -61,7 +63,6 @@ class QuizFragment : Fragment() {
                     showQuestion()
                 } else {
                     it.visibility = View.GONE
-
                     Snackbar.make(it, "You won the quiz!", Snackbar.LENGTH_INDEFINITE)
                         .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE)
                         .setAction("Replay") {
@@ -70,12 +71,9 @@ class QuizFragment : Fragment() {
                             showQuestion()
                         }.show()
                 }
-
             } else {
                 Log.i("Quiz", "Wrong answer")
             }
-
-
         }
         // Inflate the layout for this fragment
         return view
@@ -89,7 +87,6 @@ class QuizFragment : Fragment() {
                     result = response.body()!!
                     showQuestion()
                 }
-
             }
 
             override fun onFailure(call: Call<Result>, t: Throwable) {
@@ -109,10 +106,11 @@ class QuizFragment : Fragment() {
         question2 = result.results?.get(count)?.incorrectAnswers?.get(1).toString()
         question3 = result.results?.get(count)?.incorrectAnswers?.get(2).toString()
         question4 = result.results?.get(count)?.correctAnswer.toString()
-        binding.rb1.text = question1
-        binding.rb2.text = question2
-        binding.rb3.text = question3
-        binding.rb4.text = question4
+        questionsArray = arrayListOf(question1, question2, question3, question4)
+        questionsArray.shuffle()
+        questionsArray.forEachIndexed { i, question ->
+            rbArray[i].text = question
+        }
     }
 
     private fun checkAnswer(id: Int): Boolean {
@@ -123,6 +121,6 @@ class QuizFragment : Fragment() {
             }
         }
         return false
-
     }
+
 }
