@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.example.quadsolutionstrivia.databinding.FragmentQuizBinding
+import com.example.quadsolutionstrivia.model.Answer
+import com.example.quadsolutionstrivia.model.Question
 import com.example.quadsolutionstrivia.model.Result
 import com.example.quadsolutionstrivia.retrofit.ApiInterface
 import com.google.android.material.snackbar.BaseTransientBottomBar

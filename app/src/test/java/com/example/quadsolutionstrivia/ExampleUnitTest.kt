@@ -1,7 +1,7 @@
 package com.example.quadsolutionstrivia
 
 import com.example.quadsolutionstrivia.model.CheckAnswer
-import com.example.quadsolutionstrivia.model.CheckAnswerRequest
+import com.example.quadsolutionstrivia.model.Answer
 import com.example.quadsolutionstrivia.model.Question
 import com.example.quadsolutionstrivia.model.Result
 import com.example.quadsolutionstrivia.retrofit.ApiInterface
@@ -50,7 +50,7 @@ class ExampleUnitTest {
 
     @Test
     fun answerRequest() {
-        val answerRequest = CheckAnswerRequest()
+        val answerRequest = Answer()
         answerRequest.answer = "ello dere"
         assertEquals(null, answerRequest.question)
         assertEquals("ello dere", answerRequest.answer)
