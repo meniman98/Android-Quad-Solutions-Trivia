@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.example.quadsolutionstrivia.databinding.FragmentQuizBinding
 import com.example.quadsolutionstrivia.model.Answer
+import com.example.quadsolutionstrivia.model.CheckAnswer
 import com.example.quadsolutionstrivia.model.Question
 import com.example.quadsolutionstrivia.model.Result
 import com.example.quadsolutionstrivia.retrofit.ApiInterface
@@ -37,6 +39,8 @@ class QuizFragment : Fragment() {
     private var count: Int = 0
     private val apiInterface = ApiInterface.create().getQuestions()
     private lateinit var rbArray: Array<RadioButton>
+    private lateinit var answer: Answer
+    private lateinit var radioButton: RadioButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,24 +63,9 @@ class QuizFragment : Fragment() {
         // show next question
         binding.btnSubmit.setOnClickListener {
             val selectedButton = radioGroup.checkedRadioButtonId
-            if (checkAnswer(selectedButton)) {
-                if (count < 4) {
-                    count++
-                    showQuestion()
-                } else {
-                    it.visibility = View.GONE
-                    Snackbar.make(it, "You won the quiz!", Snackbar.LENGTH_INDEFINITE)
-                        .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE)
-                        .setAction("Replay") {
-                            binding.btnSubmit.visibility = View.VISIBLE
-                            count = 0
-                            showQuestion()
-                        }.show()
-                }
-            } else {
-                Log.i("Quiz", "Wrong answer")
-            }
+            checkPostAnswer(selectedButton)
         }
+
         // Inflate the layout for this fragment
         return view
     }
@@ -116,13 +105,56 @@ class QuizFragment : Fragment() {
     }
 
     private fun checkAnswer(id: Int): Boolean {
-        val radioButton: RadioButton? = view?.findViewById(id)
-        if (radioButton != null) {
-            if (radioButton.text.equals(result.results?.get(count)?.correctAnswer)) {
-                return true
-            }
+        radioButton = view?.findViewById(id)!!
+        if (radioButton.text.equals(result.results?.get(count)?.correctAnswer)) {
+            return true
         }
         return false
     }
 
+    private fun checkPostAnswer(id: Int) {
+        radioButton = view?.findViewById(id)!!
+        val radioAnswer: String = radioButton.text.toString()
+        val question: Question = result.results!![count]
+        answer = Answer(radioAnswer, question)
+        val postRequest = ApiInterface.create().postQuestion(answer)
+
+        postRequest.enqueue(object : Callback<CheckAnswer> {
+            override fun onFailure(call: Call<CheckAnswer>, t: Throwable) {
+                Log.i("Quiz", t.message!!)
+            }
+
+            override fun onResponse(call: Call<CheckAnswer>, response: Response<CheckAnswer>) {
+                if (response.body()?.result!!) {
+                    Log.i("Quiz", response.code().toString())
+                    if (count < 4) {
+                        count++
+                        showQuestion()
+                    } else {
+                        val it: Button = binding.btnSubmit
+                        it.visibility = View.GONE
+                        Snackbar.make(it, "You won the quiz!", Snackbar.LENGTH_INDEFINITE)
+                            .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE)
+                            .setAction("Replay") {
+                                binding.btnSubmit.visibility = View.VISIBLE
+                                count = 0
+                                showQuestion()
+                            }.show()
+                    }
+
+                }
+
+
+            }
+
+        })
+
+
+    }
 }
+
+
+
+
+
+
